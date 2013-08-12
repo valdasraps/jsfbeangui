@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface EntityTitle {
     
-    EntityTitleType type() default EntityTitleType.ENTITY;
+    EntityTitleType type();
     String value() default "";
     
 }

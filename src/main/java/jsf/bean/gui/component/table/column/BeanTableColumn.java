@@ -3,14 +3,12 @@ package jsf.bean.gui.component.table.column;
 import javax.faces.event.ActionEvent;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
+@Log4j
 public abstract class BeanTableColumn extends BeanTableColumnBase {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumn.class);
 
     protected final BeanTable table;
 
@@ -36,7 +34,7 @@ public abstract class BeanTableColumn extends BeanTableColumnBase {
             try {
                 return PropertyUtils.getSimpleProperty(o, getName());
             } catch (Exception ex) {
-                logger.error("Error while retrieving bean value", ex);
+                log.error("Error while retrieving bean value", ex);
             }
         }
         return null;

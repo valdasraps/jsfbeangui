@@ -11,8 +11,8 @@ public interface BeanTableDaoIf {
     Long getDataCount(BeanTable table);
 
     List<EntityBeanBase> getData(BeanTable table,
-            int pageSize,
-            int pageIndex);
+                                int pageSize,
+                                int pageIndex);
     
     DetachedCriteria getDetachedCriteria(BeanTable table);
     

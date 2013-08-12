@@ -6,16 +6,12 @@ package jsf.bean.gui.component.table.export;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
  * @author valdor
  */
 public abstract class BeanTableDefaultExportTemplate implements BeanTableExportTemplate {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableDefaultExportTemplate.class);
     
     protected static final String TEMPLATE = "/jsf/bean/gui/component/table/template/%s.ftl";
     private static final String KEY_MIME_SUFFIX = ".mime";

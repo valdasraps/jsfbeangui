@@ -14,16 +14,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
  * @author valdo
  */
 public class BeanTableExportProcessorSecXslt extends BeanTableExportProcessorSecondary {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportProcessorSecXslt.class);
+    
     private static final TransformerFactory tf = TransformerFactory.newInstance();
     
     public BeanTableExportProcessorSecXslt(BeanTable table, BeanTableExportTemplateSecondary template) {

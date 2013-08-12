@@ -12,16 +12,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
  * @author valdo
  */
 public abstract class BeanTableExportProcessorSecondary extends BeanTableExportProcessor {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportProcessorSecondary.class);
     
     protected final BeanTableExportTemplateSecondary template;
 
@@ -35,7 +31,7 @@ public abstract class BeanTableExportProcessorSecondary extends BeanTableExportP
     protected List inputStreamToList(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         List<String> list = new ArrayList<String>();
-        String line = null;
+        String line;
 
         while ((line = br.readLine()) != null) {
             list.add(line);

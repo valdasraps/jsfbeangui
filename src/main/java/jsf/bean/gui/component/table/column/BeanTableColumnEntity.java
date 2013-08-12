@@ -11,14 +11,11 @@ import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.component.table.BeanTableProjectionFilter;
 import jsf.bean.gui.component.table.BeanTableProjectionFilterItem;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 import jsf.bean.gui.metadata.RestrictedPropertyMd;
 
 public class BeanTableColumnEntity extends BeanTableColumn {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnEntity.class);
     private String referencedProperty = null;
     private EntityTitle entityTitle;
 

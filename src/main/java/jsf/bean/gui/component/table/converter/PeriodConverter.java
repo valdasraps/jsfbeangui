@@ -1,13 +1,12 @@
 package jsf.bean.gui.component.table.converter;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
-import javax.faces.convert.ConverterException;
-import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
 
 public class PeriodConverter implements Converter {
 
@@ -21,7 +20,7 @@ public class PeriodConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        BigInteger obj = null;
+        Long obj = null;
         if (value != null && value.trim().length() > 0) {
             Matcher m = periodPattern.matcher(value);
             if (!m.matches()) {
@@ -33,7 +32,7 @@ public class PeriodConverter implements Converter {
                 long t = Long.parseLong(tokens[i]);
                 v += t * seconds[seconds.length - tokens.length + i];
             }
-            obj = BigInteger.valueOf(v);
+            obj = Long.valueOf(v);
         }
         return obj;
     }
@@ -44,8 +43,12 @@ public class PeriodConverter implements Converter {
         if (value == null) {
             return "";
         }
+        
+        if (! (value instanceof Long)) {
+            return "";
+        }
 
-        long secs = ((BigInteger) value).longValue();
+        long secs = ((Number) value).longValue();
         String s = "";
         boolean wasData = false;
 

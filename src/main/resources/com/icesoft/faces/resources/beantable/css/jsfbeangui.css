@@ -1,0 +1,75 @@
+@import url('xbreadcrumbs.css');
+
+.bt-bold {
+    font-weight: bold;
+}
+
+.bt-bold {
+    color: black;
+}
+
+.bt-fi {
+    background-color: lightpink;
+    font-size: 11px;
+    color: white;
+    vertical-align: middle;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.bt-fi a {
+    padding-right: 10px;
+}
+
+.bt-fi span {
+    padding-right: 10px;
+}
+
+.bt-0margin {
+    padding: 0px; 
+    border-spacing: 0px;
+}
+
+.bt-header {
+    vertical-align: top; 
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bt-header-title {
+    font-size: 11px; 
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: Arial,Helvetica,sans-serif;
+}
+
+.bt-header-popup {
+    display: none; 
+    border-left: black outset 2px;  
+    border-right: black outset 2px;  
+    border-bottom: black outset 2px; 
+    background-color: #eeeeee;
+}
+
+.bt-action-col {
+    overflow: hidden; 
+    vertical-align: top; 
+    height: 100%;
+}
+
+.bt-cell {
+    width: 100%; 
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bt-cell:hover {
+    text-overflow: inherit;
+    overflow: visible !important;
+}

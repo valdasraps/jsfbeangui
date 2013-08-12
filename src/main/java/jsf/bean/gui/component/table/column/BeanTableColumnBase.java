@@ -10,13 +10,9 @@ import javax.faces.convert.Converter;
 import jsf.bean.gui.annotation.PeriodType;
 import jsf.bean.gui.component.table.BeanTableFilter;
 import jsf.bean.gui.component.table.converter.FilterConverter;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public class BeanTableColumnBase implements Serializable {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnBase.class);
 
     private final BeanTableColumnBase parent;
     protected final String name;
@@ -37,7 +33,7 @@ public class BeanTableColumnBase implements Serializable {
         this.name = propertyMd.getName();
         this.type = propertyMd.getType();
         this.title = propertyMd.getTitle();
-        this.periodType = (type.equals(BigInteger.class) && propertyMd.getField().isAnnotationPresent(PeriodType.class));
+        this.periodType = (type.equals(Long.class) && propertyMd.getField().isAnnotationPresent(PeriodType.class));
         this.filterConverter = FilterConverter.getFilterConverter(propertyMd);
     }
 

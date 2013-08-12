@@ -18,16 +18,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
  * @author valdo
  */
 public class TemplateManager {
-
-    private static final Logger logger = SimpleLogger.getLogger(TemplateManager.class);
     
     private Configuration cfg;
     private StringTemplateLoader loader;

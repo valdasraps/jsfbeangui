@@ -1,11 +1,11 @@
 package jsf.bean.gui.component.table;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.CriteriaQuery;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.engine.spi.TypedValue;
 
 public class SQLParamRestriction implements Criterion {

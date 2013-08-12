@@ -21,12 +21,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public abstract class JsfBeanBase implements Serializable {
 
-    private static final Logger logger = SimpleLogger.getLogger(JsfBeanBase.class);
     private static final int YEAR_SECONDS = 356 * 24 * 60 * 60;
 
     public JsfBeanBase() {
@@ -76,7 +75,7 @@ public abstract class JsfBeanBase implements Serializable {
             Application app = context.getApplication();
             value = app.evaluateExpressionGet(context, "#{" + expr + "}", Object.class);
         } catch (NullPointerException e) {
-            logger.error("Error while evaluating expression", e);
+            log.error("Error while evaluating expression", e);
         }
         return value;
     }

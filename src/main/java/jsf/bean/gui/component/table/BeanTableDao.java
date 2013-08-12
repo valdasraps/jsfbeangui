@@ -10,10 +10,9 @@ import jsf.bean.gui.component.table.column.BeanTableColumnBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
 import jsf.bean.gui.component.table.column.BeanTableColumnEntity;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
@@ -21,17 +20,19 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 
-public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
+public class BeanTableDao implements Serializable, BeanTableDaoIf {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
     private static final Integer MAX_IN_ELEMENTS = 1000;
+    private final HibernateSessionProvider sessionProvider;
 
-    protected abstract Session getSession();    
-    protected abstract void rollbackSession(Session session);
-
+    public BeanTableDao(HibernateSessionProvider sessionProvider) {
+        this.sessionProvider = sessionProvider;
+    }
+   
     /**
-     * Method is being called right before executing criteria.
-     * Default method adds cache. Override to change!
+     * Method is being called right before executing criteria. Default method
+     * adds cache. Override to change!
+     *
      * @param table Table
      * @param c Criteria to be executed
      */
@@ -41,8 +42,9 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
     }
 
     /**
-     * Method is being called right before executing count criteria.
-     * Default method adds cache. Override to change!
+     * Method is being called right before executing count criteria. Default
+     * method adds cache. Override to change!
+     *
      * @param table Table
      * @param c Criteria to be executed
      */
@@ -50,11 +52,12 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
-    
+
     /**
      * Check if this table (i.e. rowClass) has a special Id criteria treatment?
-     * If this returns true than latter customIdCriteria will be called and 
+     * If this returns true than latter customIdCriteria will be called and
      * default criterias will not be used.
+     *
      * @param table Source table
      * @return true if custom criteria has implementation, false otherwise
      */
@@ -64,14 +67,17 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
     /**
      * Apply custom criteria
+     *
      * @param table Source table
      * @param c Criteria to apply ids to
      * @param pageIds List of page ids
      */
-    public void applyCustomPageIdCriteria(BeanTable table, Criteria c, List pageIds) { }
-    
+    public void applyCustomPageIdCriteria(BeanTable table, Criteria c, List pageIds) {
+    }
+
     /**
      * Get list of data for the table
+     *
      * @param table Source table
      * @return List of data
      */
@@ -83,7 +89,8 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
     }
 
     /**
-     * Get list of page data for table 
+     * Get list of page data for table
+     *
      * @param table Source table
      * @param pageSize Page size
      * @param pageIndex Page index
@@ -96,17 +103,17 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
         List<EntityBeanBase> data = new ArrayList<EntityBeanBase>();
 
-        Session session = getSession();
+        Session session = sessionProvider.getSession();
+        Transaction tx = session.beginTransaction();
         try {
-        
             List pageIds = null;
-            
+
             if (pageSize > 0 && pageSize <= MAX_IN_ELEMENTS) {
                 Criteria c = getDetachedCriteria(table)
-                                    .getExecutableCriteria(session)
-                                    .setProjection(Projections.id())
-                                    .setFirstResult((pageIndex - 1) * pageSize)
-                                    .setMaxResults(pageSize);
+                        .getExecutableCriteria(session)
+                        .setProjection(Projections.id())
+                        .setFirstResult((pageIndex - 1) * pageSize)
+                        .setMaxResults(pageSize);
                 applyOrder(c, table);
                 preExecute(session, table, c);
                 //Long sTime = System.nanoTime();
@@ -141,9 +148,9 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
                 //System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
 
             }
-            
+
         } finally {
-            rollbackSession(session);
+            tx.rollback();
         }
 
         return data;
@@ -151,18 +158,20 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
     /**
      * Get data size on table
+     *
      * @param table Source table
      * @return number of rows
      */
     public Long getDataCount(BeanTable table) {
-        
+
         Long count = 0L;
-        Session session = getSession();
+
+        Session session = sessionProvider.getSession();
+        Transaction tx = session.beginTransaction();
         try {
-            
             Criteria c = getDetachedCriteria(table)
-                                .getExecutableCriteria(session)
-                                .setProjection(Projections.rowCount());
+                    .getExecutableCriteria(session)
+                    .setProjection(Projections.rowCount());
 
             preExecuteCount(session, table, c);
             c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -171,16 +180,15 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
             count = (Long) c.uniqueResult();
             //Long eTime = System.nanoTime();
             //System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
-            
         } finally {
-            rollbackSession(session);
+            tx.rollback();
         }
-
         return count;
     }
 
     /**
      * Apply order instructions on criteria
+     *
      * @param c Criteria
      * @param table Source table
      */
@@ -196,6 +204,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
     /**
      * Get detached (db session free) criteria
+     *
      * @param table Source table
      * @return Criteria
      */
@@ -205,7 +214,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         CriteriaConfig config = new CriteriaConfig();
 
         Junction con = Restrictions.conjunction();
-        
+
         if (table.isQueryApplied()) {
             con.add(SQLParamRestriction.restriction(table.getAppliedQuery()));
         }
@@ -232,13 +241,13 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
             }
         }
 
-        for (String cname: table.getPack().getPropertyFilters().keySet()) {
+        for (String cname : table.getPack().getPropertyFilters().keySet()) {
             BeanTableColumn col = table.getColumn(cname);
             if (col != null) {
                 con.add(applyColumnFilter(c, col, table.getPack().getPropertyFilters().get(cname), config));
             }
         }
-        
+
         if (table.getPack().isPropertyQuery()) {
             con.add(SQLParamRestriction.restriction(table.getPack().getPropertyQuery()));
         }
@@ -246,7 +255,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         for (BeanTableColumn col : table.getColumns()) {
             if (col.isFilterSet()) {
                 if (col instanceof BeanTableColumnEmbedded) {
-                    for (BeanTableColumnBase ecol: ((BeanTableColumnEmbedded) col).getProperties()) {
+                    for (BeanTableColumnBase ecol : ((BeanTableColumnEmbedded) col).getProperties()) {
                         if (ecol.isFilterSet()) {
                             con.add(applyColumnFilter(c, ecol, ecol.getFilter(), config));
                         }
@@ -259,22 +268,23 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         }
 
         c.add(con);
-        
+
         return c;
 
     }
 
     /**
      * Apply single column filter(s) on detached criteria
+     *
      * @param c Criteria to apply filters upon
-     * @param col Source column 
+     * @param col Source column
      * @param f Filter
      * @param config Criteria configuration
      */
     private Junction applyColumnFilter(DetachedCriteria c, BeanTableColumnBase col, BeanTableFilter f, CriteriaConfig config) {
 
         Junction jun = Restrictions.conjunction();
-        
+
         String propertyName = col.getFilterName();
 
         if (f.getItems().size() > 0) {
@@ -366,14 +376,13 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
             jun.add(disJun).add(conJun);
 
         }
-        
+
         return jun;
 
     }
 
     /**
-     * Criteria configuration class which 
-     * holds and manages criteria aliases
+     * Criteria configuration class which holds and manages criteria aliases
      */
     private class CriteriaConfig {
 
@@ -382,6 +391,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
         /**
          * Next column alias
+         *
          * @return Alias
          */
         public String nextAlias() {
@@ -391,12 +401,11 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
         /**
          * Current alias
+         *
          * @return Alias
          */
         public String sameAlias() {
             return ALIAS_PREFIX.concat(String.valueOf(aliasNo));
         }
-
     }
-
 }

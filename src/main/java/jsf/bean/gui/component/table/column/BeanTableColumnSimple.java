@@ -4,13 +4,9 @@ import javax.faces.convert.DateTimeConverter;
 import javax.faces.convert.NumberConverter;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.converter.PeriodConverter;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public class BeanTableColumnSimple extends BeanTableColumnSortable {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnSimple.class);
 
     public BeanTableColumnSimple(BeanTable table, PropertyMd propertyMd) {
         super(table, propertyMd);

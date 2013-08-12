@@ -12,16 +12,12 @@ import java.util.List;
 import java.util.Map;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.column.BeanTableColumn;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 /**
  *
  * @author valdo
  */
 public abstract class BeanTableExportProcessor {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportProcessor.class);
     
     public static final String COLUMNS = "columns";
     public static final String LINES = "lines";

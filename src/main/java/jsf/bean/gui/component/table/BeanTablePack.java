@@ -89,7 +89,7 @@ public class BeanTablePack implements Serializable {
     public final void setSelectedClass(Class<? extends EntityBeanBase> selectedClass) throws Exception {
         if (selectedClass != null && (this.selectedClass == null || !this.selectedClass.equals(selectedClass))) {
             this.selectedClass = selectedClass;
-            String newPrefix = null;
+            String newPrefix;
             if (classes.isEmpty()) {
                 newPrefix = prefix;
             } else {
@@ -221,19 +221,18 @@ public class BeanTablePack implements Serializable {
                 
                 JSONObject columnFilterJson = filterJson.optJSONObject(columnName);
                 if (columnFilterJson != null) {
-                    if (columnFilterJson.has("rowClass")) {
-                        if (column.isEntityType()) {
-                            if (column.isListType()) {
-                                BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
-                                ce.setFilterTablePack(this.prefix);
-                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
-                            } else {
-                                BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
-                                ce.setFilterTablePack(this.prefix);
-                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
-                            }
+                    if (column.isEntityType()) {
+                        if (column.isListType()) {
+                            BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
+                            ce.setFilterTablePack(this.prefix);
+                            ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
+                        } else {
+                            BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
+                            ce.setFilterTablePack(this.prefix);
+                            ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
                         }
-                    } else {
+                    } else
+                    if (column.isEmbedType()) {
                         BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
                         for (BeanTableColumnBase properties : ec.getProperties()) {
                             if (columnFilterJson.has(properties.getName())) {

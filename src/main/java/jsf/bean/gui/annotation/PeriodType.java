@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that this BigInteger column (value in seconds) is a period (defines filter)
+ * Indicates that this Long column (value in seconds) is a period (defines filter)
  * @author Valdo
  */
 @Retention(RetentionPolicy.RUNTIME)

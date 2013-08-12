@@ -21,13 +21,12 @@ import java.util.List;
 import jsf.bean.gui.component.table.column.BeanTableColumnBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
 import jsf.bean.gui.component.table.column.BeanTableColumnSimple;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
+@Log4j
 public class BeanTableExportColumn {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportColumn.class);
     private final BeanTableColumnBase column;
     private final String name;
     private final String title;
@@ -138,7 +137,7 @@ public class BeanTableExportColumn {
         public TemplateModel exec(List args) throws TemplateModelException {
 
             if (args.size() != 1) {
-                logger.error("Template error. Wrong quantity of arguments was passed to method.");
+                log.error("Template error. Wrong quantity of arguments was passed to method.");
                 return new SimpleScalar("");
             }
             try {
@@ -158,7 +157,7 @@ public class BeanTableExportColumn {
                 return (SimpleScalar) o;
 
             } catch (Exception e) {
-                logger.error(e);
+                log.error(e);
                 return new SimpleScalar("");
             }
         }

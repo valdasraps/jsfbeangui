@@ -9,12 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import javax.faces.model.SelectItem;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GenericProperties implements Serializable {
 
-    private static final Logger logger = SimpleLogger.getLogger(GenericProperties.class);
     private Properties properties;
 
     public GenericProperties(Properties properties) {
@@ -136,7 +135,7 @@ public class GenericProperties implements Serializable {
         try {
             properties.store(sw, null);
         } catch (IOException ex) {
-            logger.error(ex);
+            log.error(ex);
         }
         return sw.toString();
     }

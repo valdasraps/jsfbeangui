@@ -5,13 +5,10 @@ import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableListFilter;
 import jsf.bean.gui.component.table.BeanTablePack;
 import jsf.bean.gui.component.table.BeanTablePackFilter;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public class BeanTableColumnEntityList extends BeanTableColumnEntity {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnEntityList.class);
     private Class itemType = null;
 
     public BeanTableColumnEntityList(BeanTable table, PropertyMd propertyMd) {

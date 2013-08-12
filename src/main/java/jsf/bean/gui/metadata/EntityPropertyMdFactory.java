@@ -24,17 +24,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  *
  * @author Evka
  */
+@Log4j
 public class EntityPropertyMdFactory {
-
-    private static Logger logger = SimpleLogger.getLogger(EntityPropertyMdFactory.class);
 
     private static Pattern ignoredPropertiesPattern = Pattern.compile("(set|id|entityId|class|propertyMetadata|properties|entityTitle|metadata|componentId)(.*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(\\p{Lower}.+)Item");
@@ -123,7 +121,7 @@ public class EntityPropertyMdFactory {
                     metadata.add(propMeta);
                 }
             } catch (InvalidEntityBeanPropertyException ex) {
-                logger.warn("Exception while constructing entity bean " + entityClass.getName() + " properties metadata (" + ex.getMessage() + ") - skipping this property");
+                log.warn("Exception while constructing entity bean " + entityClass.getName() + " properties metadata (" + ex.getMessage() + ") - skipping this property");
             }
         }
         return metadata;

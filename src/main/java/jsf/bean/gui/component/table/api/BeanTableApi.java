@@ -4,7 +4,6 @@
  */
 package jsf.bean.gui.component.table.api;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,7 +16,10 @@ import jsf.bean.gui.component.BeanTableApiManager;
 import jsf.bean.gui.component.BeanTableManager;
 import jsf.bean.gui.component.table.BeanTable;
 import jsf.bean.gui.component.table.BeanTableDaoIf;
+import jsf.bean.gui.component.table.column.BeanTableColumn;
+import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
+import jsf.bean.gui.component.table.export.BeanTableExportManager.ExportResult;
 import jsf.bean.gui.component.table.export.BeanTableExportResource;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import org.json.JSONObject;
@@ -32,7 +34,7 @@ public class BeanTableApi {
     private final BeanTableManager manager;
     private final BeanTableApiManager apimanager;
     private final BeanTableDaoIf tableDao;
-    private Map<String, BeanTableExportResource> exportResources = new HashMap<String, BeanTableExportResource>();
+    private final Map<String, BeanTableExportResource> exportResources = new HashMap<String, BeanTableExportResource>();
     
     public BeanTableApi(BeanTableApiConfig config, 
                         BeanTableApiManager apimanager_,
@@ -98,12 +100,51 @@ public class BeanTableApi {
         }
         return templates;
     }
-    
-    public BeanTable getTable() {
-        return this.manager.getTable();
-    }
 
-    public InputStream export(String templateId, JSONObject apiFilter) throws Exception {
+    public void setSelectedColumns(final String [] columns) throws IllegalArgumentException {
+        BeanTable btable = this.manager.getTable();
+        btable.getSelectedColumns().getTarget().clear();
+        for (String colName: columns) {
+            BeanTableColumn column = btable.getColumn(colName);
+            if (column == null) {
+                throw new IllegalArgumentException(String.format("Column [{%s}] not found. Fix column list.", colName));
+            }
+            btable.getSelectedColumns().getTarget().add(column);
+        }
+    }
+    
+    public void setSortingColumns(final String [] order) throws IllegalArgumentException {
+        BeanTable btable = this.manager.getTable();
+        btable.getSortingColumns().getTarget().clear();
+        for (String orderItem: order) {
+            String[] orderItems = orderItem.split(" ");
+
+            if (orderItems.length != 2) {
+                throw new IllegalArgumentException(String.format("Wrong order list format at [%s].", orderItem));
+            }
+
+            BeanTableColumn column = btable.getColumn(orderItems[0]);
+            if (column == null) {
+                throw new IllegalArgumentException(String.format("Column [{%s}] not found. Fix order list.", orderItems[0]));
+            }
+
+            if (!(column instanceof BeanTableColumnSortable)) {
+                throw new IllegalArgumentException(String.format("Column [{%s}] not sortable.", orderItems[0]));
+            }
+
+            BeanTableColumnSortable scolumn = (BeanTableColumnSortable) column;
+
+            if (!("asc".equals(orderItems[1]) || "desc".equals(orderItems[1]))) {
+                throw new IllegalArgumentException(String.format("Column [{%s}] ordering [%s] is incorrect.", orderItems[0], orderItems[1]));
+            }
+
+            scolumn.setAscending("asc".equals(orderItems[1]));
+            btable.getSortingColumns().getTarget().add(scolumn);
+
+        }
+    }
+    
+    public ExportResult export(String templateId, JSONObject apiFilter) throws Exception {
         
         if (!exportResources.containsKey(templateId)) {
             throw new Exception(String.format("Template [%s] not found?!", templateId));
@@ -113,7 +154,7 @@ public class BeanTableApi {
             this.manager.getTablePack().setSerializedFilter(apiFilter);
         }
         
-        return exportResources.get(templateId).open();
+        return exportResources.get(templateId).export();
         
     }
     
@@ -123,7 +164,8 @@ public class BeanTableApi {
             this.manager.getTablePack().setSerializedFilter(apiFilter);
         }
         
-        return this.manager.getTable().getDataCount();
+        BeanTableDaoIf dao = this.manager.getBeanTableDao();
+        return dao.getDataCount(this.manager.getTable());
         
     }
     

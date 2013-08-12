@@ -19,16 +19,26 @@ import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 
 /**
- *
+ * Holds configurations for the single table API
  * @author valdo
  */
 public abstract class BeanTableApiManager {
     
+    /**
+     * Table configuration provider
+     */
     private final BeanTableApiConfigProviderIf configProvider;
+    
+    /**
+     * Table columns
+     */
     private Map<String, Collection<BeanTableQueryColumn>> cacheColumns;
+    
+    /**
+     * Table templates
+     */
     private Map<String, Collection<BeanTableApiTemplate>> cacheTemplates;
 
-    public abstract BeanTableDaoIf getBeanTableDao();
     public abstract ClassFinderIf getClassFinder();
     public abstract BeanTableExportTemplateProvider getTemplateProvider(BeanTable table);
     
@@ -38,22 +48,22 @@ public abstract class BeanTableApiManager {
         this.cacheTemplates = new HashMap<String, Collection<BeanTableApiTemplate>>();
     }
     
-    public Collection<BeanTableQueryColumn> getColumns(String id) throws Exception {
+    public Collection<BeanTableQueryColumn> getColumns(String id, BeanTableDaoIf dao) throws Exception {
         if (!cacheColumns.containsKey(id)) {
-            cacheColumns.put(id, getApi(id).getColumns());
+            cacheColumns.put(id, getApi(id, dao).getColumns());
         }
         return cacheColumns.get(id);
     }
     
-    public Collection<BeanTableApiTemplate> getTemplates(String id) throws Exception {
+    public Collection<BeanTableApiTemplate> getTemplates(String id, BeanTableDaoIf dao) throws Exception {
         if (!cacheTemplates.containsKey(id)) {
-            cacheTemplates.put(id, getApi(id).getTemplates());
+            cacheTemplates.put(id, getApi(id, dao).getTemplates());
         }
         return cacheTemplates.get(id);
     }
 
-    public boolean isTemplateExists(String id, String name) throws Exception {
-        for (BeanTableApiTemplate t: getTemplates(id)) {
+    public boolean isTemplateExists(String id, String name, BeanTableDaoIf dao) throws Exception {
+        for (BeanTableApiTemplate t: getTemplates(id, dao)) {
             if (t.getId().equals(name)) {
                 return true;
             }
@@ -61,8 +71,8 @@ public abstract class BeanTableApiManager {
         return false;
     }
     
-    public BeanTableApiTemplate getTemplate(String id, String name) throws Exception {
-        for (BeanTableApiTemplate t: getTemplates(id)) {
+    public BeanTableApiTemplate getTemplate(String id, String name, BeanTableDaoIf dao) throws Exception {
+        for (BeanTableApiTemplate t: getTemplates(id, dao)) {
             if (t.getId().equals(name)) {
                 return t;
             }
@@ -75,10 +85,6 @@ public abstract class BeanTableApiManager {
         if (config != null) {
             this.cacheTemplates.remove(config.getId());
         }
-    }
-    
-    public BeanTableApi getApi(String id) throws Exception {
-        return getApi(id, getBeanTableDao());
     }
     
     public BeanTableApi getApi(String id, BeanTableDaoIf tableDao) throws Exception {

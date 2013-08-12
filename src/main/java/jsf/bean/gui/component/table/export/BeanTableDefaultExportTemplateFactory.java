@@ -10,16 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 
 /**
  *
  * @author valdor
  */
+@Log4j
 public class BeanTableDefaultExportTemplateFactory {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableDefaultExportTemplateFactory.class);
     
     private static final String TEMPLATES_BUNDLE = "jsf.bean.gui.component.table.template.templates";
     private static final String KEY_PRIMARY = "primary";
@@ -47,7 +45,7 @@ public class BeanTableDefaultExportTemplateFactory {
                             templates.add(t);
                             loaded.put(key, t);
                         } catch (IOException ex) {
-                            logger.error("Error while loading default templates", ex);
+                            log.error("Error while loading default templates", ex);
                         }
                     }
                 }
@@ -73,7 +71,7 @@ public class BeanTableDefaultExportTemplateFactory {
                                     }
                                     numLoaded += 1;
                                 } catch (IOException ex) {
-                                    logger.error("Error while loading default templates", ex);
+                                    log.error("Error while loading default templates", ex);
                                 }
                             } else {
                                 numMissedToLoad += 1;

@@ -19,10 +19,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import jsf.bean.gui.annotation.UseInTitle;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
 import jsf.bean.gui.exception.InvalidEntityClassException;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.EntityPropertyMdFactory;
 import jsf.bean.gui.metadata.PropertyMd;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
 /**
@@ -30,9 +29,8 @@ import org.apache.commons.beanutils.PropertyUtils;
  * @author Evka
  */
 //@EJB(name="ejb/EntityDao", beanInterface=org.cern.cms.csc.dw.dao.EntityDaoLocal.class)
+@Log4j
 public class EntityBeanBase implements Serializable {
-
-    private static Logger logger = SimpleLogger.getLogger(EntityBeanBase.class);
 
     /** Class property metadata cache. */
     @Transient
@@ -194,12 +192,28 @@ public class EntityBeanBase implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        PropertyDescriptor myIdProp = getIdPropertyMd();
+        if ((myIdProp == null)) {
+            return super.toString();
+        }
+        try {
+            Object myId = myIdProp.getReadMethod().invoke(this);
+            StringBuilder sb = new StringBuilder();
+            sb.append(this.getClass()).append(" [id = ").append(myId).append("]");
+            return sb.toString();
+        } catch (Exception ex) {
+            return super.toString();
+        }
+    }
+    
     @Transient
     public Object getEntityId() {
         try {
             return getIdPropertyMd().getReadMethod().invoke(this);
         } catch (Exception ex) {
-            logger.error("Exception while trying to get entity ID", ex);
+            log.error("Exception while trying to get entity ID", ex);
             return null;
         }
     }

@@ -19,8 +19,7 @@ import jsf.bean.gui.annotation.ImmutableReference;
 import jsf.bean.gui.annotation.Label;
 import jsf.bean.gui.annotation.NoManualInput;
 import jsf.bean.gui.exception.InvalidEntityBeanPropertyException;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
 /**
@@ -28,9 +27,8 @@ import org.apache.commons.beanutils.PropertyUtils;
  * All entities which are subclasses of EntityBase class can return a list of these objects corresponding to their attributes.
  * @author Evka
  */
+@Log4j
 public abstract class PropertyMd implements Serializable {
-
-    private static Logger logger = SimpleLogger.getLogger(PropertyMd.class);
 
     private static Pattern camelCasePattern = Pattern.compile("(\\p{Upper}[\\p{Lower}\\d]*)");
     private static Pattern itemPropertyPattern = Pattern.compile("(.+)Item");
@@ -314,7 +312,7 @@ public abstract class PropertyMd implements Serializable {
                     }
                 }
             } catch (Exception ex) {
-                logger.error("Exception while validating a many-to-one relation value", ex);
+                log.error("Exception while validating a many-to-one relation value", ex);
                 throw new RuntimeException("Exception while validating a many-to-one relation value", ex);
             }
         }

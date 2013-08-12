@@ -13,18 +13,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Stack;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
 /**
  *
  * @author valdo
  */
+@Log4j
 public class BeanTableExportManager {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportManager.class);
-
-    private static final File tmpDir = new File("/tmp");
+    private static final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
     
     private final BeanTable table;
     private final BeanTableExportTemplate topTemplate;
@@ -40,7 +39,7 @@ public class BeanTableExportManager {
         this.isPreview = isPreview;
     }
 
-    public InputStream export() throws IOException {
+    public ExportResult export() throws IOException {
 
         Stack<BeanTableExportTemplate> stack = new Stack<BeanTableExportTemplate>();
         BeanTableExportTemplate ct = topTemplate;
@@ -55,16 +54,16 @@ public class BeanTableExportManager {
         StreamWorker output = new StreamWorker();
         BeanTableExportProcessorPrimary pm = new BeanTableExportProcessorPrimary(table, (BeanTableExportTemplatePrimary) ct, isPreview);
         success = pm.export(output.getOutputStream(ct.getExt()));
-        output.close();
+        output.closeAndSwitch();
         
         while (success && !stack.empty()) {
             ct = stack.pop();
             BeanTableExportProcessorSecondary sm = BeanTableExportProcessorSecondary.getProcessor(table, (BeanTableExportTemplateSecondary) ct);
             success = sm.export(output.getInputStream(), output.getOutputStream(ct.getExt()));
-            output.close();
+            output.closeAndSwitch();
         }
         
-        return output.getInputStream();
+        return output.getResult();
     }
 
     private class StreamWorker {
@@ -74,7 +73,7 @@ public class BeanTableExportManager {
         
         private FileOutputStream sout = null;
         private FileInputStream sin = null;
-
+        
         public OutputStream getOutputStream(String ext) throws FileNotFoundException, IOException {
             this.fout = File.createTempFile("rr3", ext, tmpDir);
             this.sout = new FileOutputStream(this.fout);
@@ -85,7 +84,7 @@ public class BeanTableExportManager {
             return this.sin;
         }
         
-        public void close() throws IOException {
+        public void closeAndSwitch() throws IOException {
             this.sout.flush();
             this.sout.close();
             this.fin = this.fout;
@@ -94,6 +93,23 @@ public class BeanTableExportManager {
             this.fout = null;
         }
         
+        public ExportResult getResult() {
+            return new ExportResult(sin, fin);
+        }
+        
+    }
+    
+    @Getter
+    public class ExportResult {
+    
+        private final InputStream stream;
+        private final File file;
+
+        public ExportResult(InputStream stream, File file) {
+            this.stream = stream;
+            this.file = file;
+        }
+
     }
         
 }

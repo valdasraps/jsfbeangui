@@ -1,8 +1,8 @@
 package jsf.bean.gui.component.table.converter;
 
 import java.util.Iterator;
-import jsf.bean.gui.component.table.BeanTableFilterItem;
 import jsf.bean.gui.component.table.BeanTableFilter;
+import jsf.bean.gui.component.table.BeanTableFilterItem;
 
 public class FilterPeriodConverter extends FilterConverter {
 

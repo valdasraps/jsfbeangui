@@ -10,8 +10,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import jsf.bean.gui.component.fm.TemplateManager;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import jsf.bean.gui.component.table.BeanTableDaoIf;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplatePrimary.TemplatePosition;
 
 /**
@@ -20,8 +19,6 @@ import jsf.bean.gui.component.table.export.BeanTableExportTemplatePrimary.Templa
  */
 public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportProcessorPrimary.class);
-    
     private static final String KEY_IS_LAST_PAGE = "isLastPage";
     private static final String KEY_IS_FIRST_PAGE = "isLastPage";
     public static final String KEY_IS_LAST = "isLast";
@@ -40,8 +37,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
             + "<#assign " + KEY_IS_FIRST + "=false>"
             + "</#if>";
     private static final String ITEM_TEMPLATE_SUFFIX = "</#list>";
-    private static final int PAGE_SIZE = 200;
-    
+    private static final int PAGE_SIZE = 1000;
     private final BeanTableExportTemplatePrimary template;
     private final boolean isPreview;
 
@@ -63,7 +59,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         // Addding appropriate templates to manager
         Map<TemplatePosition, String> templates = template.getTemplates();
         for (TemplatePosition k : TemplatePosition.values()) {
-            
+
             if (templates.containsKey(k)) {
                 String s = templates.get(k);
                 if (k.equals(TemplatePosition.ITEM) && s != null) {
@@ -73,11 +69,11 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
             } else {
                 manager.addTemplate(k.name(), "");
             }
-            
+
         }
-        
+
         Map root = getRoot();
-        
+
         // Executing header and writing output to file
         try {
             write(out, manager.execute(TemplatePosition.HEADER.name(), root));
@@ -85,7 +81,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
             write(out, ex.getMessage().concat(ex.getFTLInstructionStack()));
             return false;
         }
-        
+
         // Executing items and writing to file
         try {
             if (isPreview) {
@@ -97,7 +93,7 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
             write(out, ex.getMessage().concat(ex.getFTLInstructionStack()));
             return false;
         }
-        
+
         // Executing footer and writing to file
         try {
             write(out, manager.execute(TemplatePosition.FOOTER.name(), root));
@@ -107,28 +103,31 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         }
 
         return true;
-        
+
     }
 
     @SuppressWarnings("unchecked")
     private void writeItems(OutputStream out, TemplateManager manager, Map root) throws IOException, TemplateException {
+        BeanTableDaoIf dao = table.getPack().getManager().getBeanTableDao();
+        Long dataCount = dao.getDataCount(table);
+
         root.put(KEY_IS_LAST, false);
-        long pages = ((table.getDataCount() % PAGE_SIZE) == 0 ? (table.getDataCount() / PAGE_SIZE) : (table.getDataCount() / PAGE_SIZE) + 1);
+        long pages = ((dataCount % PAGE_SIZE) == 0 ? (dataCount / PAGE_SIZE) : (dataCount / PAGE_SIZE) + 1);
         for (Integer p = 1; p <= pages; p++) {
-            root.put(KEY_PAGE, table.getPack().getManager().getBeanTableDao().getData(table, PAGE_SIZE, p));
-            
+            root.put(KEY_PAGE, dao.getData(table, PAGE_SIZE, p));
+
             if (p == 1) {
                 root.put(KEY_IS_FIRST_PAGE, true);
             } else {
                 root.put(KEY_IS_FIRST_PAGE, false);
             }
-            
+
             if (p == pages) {
                 root.put(KEY_IS_LAST_PAGE, true);
             } else {
                 root.put(KEY_IS_LAST_PAGE, false);
             }
-            
+
             write(out, manager.execute(TemplatePosition.ITEM.name(), root));
             root.remove(KEY_IS_LAST_PAGE);
             root.put(KEY_IS_FIRST_PAGE, true);
@@ -148,5 +147,4 @@ public class BeanTableExportProcessorPrimary extends BeanTableExportProcessor {
         root.remove(KEY_IS_FIRST_PAGE);
         root.remove(KEY_PAGE);
     }
-
 }

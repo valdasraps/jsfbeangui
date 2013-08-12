@@ -2,13 +2,9 @@ package jsf.bean.gui.component.table.column;
 
 import javax.faces.event.ActionEvent;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public abstract class BeanTableColumnSortable extends BeanTableColumn {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnSortable.class);
 
     public BeanTableColumnSortable(BeanTable table, PropertyMd propertyMd) {
         super(table, propertyMd);

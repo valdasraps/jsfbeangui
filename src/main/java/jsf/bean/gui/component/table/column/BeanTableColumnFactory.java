@@ -6,14 +6,10 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.metadata.EmbeddedPropertyMd;
 import jsf.bean.gui.metadata.PropertyMd;
 
 public abstract class BeanTableColumnFactory implements Serializable {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableColumnFactory.class);
 
     public static BeanTableColumn getBeanTableColumn(BeanTable table, PropertyMd propertyMd) {
 

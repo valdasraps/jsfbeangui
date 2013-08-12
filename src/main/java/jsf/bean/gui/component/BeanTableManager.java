@@ -21,12 +21,8 @@ import jsf.bean.gui.component.table.BeanTableProperties;
 import jsf.bean.gui.component.table.BeanTablePropertiesManager;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateProvider;
 import jsf.bean.gui.converter.ClassConverter;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 
 public abstract class BeanTableManager implements Serializable {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableManager.class);
     
     private BeanTablePack tablePack;
     private List<BeanTablePack> tables = new ArrayList<BeanTablePack>();

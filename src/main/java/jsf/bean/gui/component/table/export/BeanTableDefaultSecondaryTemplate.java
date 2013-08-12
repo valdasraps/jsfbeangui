@@ -9,16 +9,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ResourceBundle;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 
 /**
  *
  * @author valdor
  */
+@Log4j
 public class BeanTableDefaultSecondaryTemplate extends BeanTableDefaultExportTemplate implements BeanTableExportTemplateSecondary {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableDefaultSecondaryTemplate.class);
     private static final String KEY_TYPE_SUFFIX = ".type";
     
     private final BeanTableExportTemplate previousTemplate;
@@ -50,7 +49,7 @@ public class BeanTableDefaultSecondaryTemplate extends BeanTableDefaultExportTem
             }
             return sb.toString();
         } catch (IOException ex) {
-            logger.error(ex);
+            log.error(ex);
             return null;
         }
     }

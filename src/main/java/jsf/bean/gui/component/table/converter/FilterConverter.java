@@ -146,15 +146,15 @@ public abstract class FilterConverter implements Converter, Serializable {
         } else
         if (type.equals(BigInteger.class)) {
 
-            if (propertyMd.getField().isAnnotationPresent(PeriodType.class)) {
-                return new FilterPeriodConverter();
-            }
-
             return new FilterBigIntegerConverter();
 
         } else
         if (type.equals(Long.class) || (type.isPrimitive() && type.getSimpleName().equals("long"))) {
 
+            if (propertyMd.getField().isAnnotationPresent(PeriodType.class)) {
+                return new FilterPeriodConverter();
+            }
+            
             return new FilterLongConverter();
 
         } else

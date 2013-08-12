@@ -11,8 +11,6 @@ import java.io.OutputStream;
 import java.util.Map;
 import jsf.bean.gui.component.fm.TemplateManager;
 import jsf.bean.gui.component.table.BeanTable;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplatePrimary.TemplatePosition;
 
 /**
@@ -20,8 +18,6 @@ import jsf.bean.gui.component.table.export.BeanTableExportTemplatePrimary.Templa
  * @author valdo
  */
 public class BeanTableExportProcessorSecFreemarker extends BeanTableExportProcessorSecondary {
-
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableExportProcessorSecFreemarker.class);
     
     public BeanTableExportProcessorSecFreemarker(BeanTable table, BeanTableExportTemplateSecondary template) {
         super(table, template);

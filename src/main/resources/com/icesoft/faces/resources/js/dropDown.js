@@ -8,14 +8,12 @@
             return this.each(function() {
                 
                 var control = $(this);
-                
-                control.bind('click',
+                control.unbind('click').click(
                     function () {
                         panel.trigger('controlClick', [ control ]); 
                         return false;
                     }
                 );
-                        
                 panel
                     .hover(function() {
                         jQuery(this).data("mouse_inside", true);

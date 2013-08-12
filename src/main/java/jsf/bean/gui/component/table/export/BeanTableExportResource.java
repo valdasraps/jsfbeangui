@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 import jsf.bean.gui.component.table.BeanTable;
+import jsf.bean.gui.component.table.export.BeanTableExportManager.ExportResult;
 import org.apache.commons.io.IOUtils;
 
 @SuppressWarnings("deprecation")
@@ -30,10 +31,14 @@ public class BeanTableExportResource implements Resource, Serializable {
         return UUID.randomUUID().toString();
     }
 
-    public InputStream open() throws IOException {
+    public ExportResult export() throws IOException {
         BeanTableExportManager manager = new BeanTableExportManager(table, template);
-        InputStream input = manager.export();
-        byte[] bytes = IOUtils.toByteArray(input);
+        return manager.export();
+    }
+    
+    public InputStream open() throws IOException {
+        ExportResult result = this.export();
+        byte[] bytes = IOUtils.toByteArray(result.getStream());
         InputStream inputStream = new ByteArrayInputStream(bytes);
         return inputStream;
     }
@@ -49,4 +54,5 @@ public class BeanTableExportResource implements Resource, Serializable {
     public BeanTableExportTemplate getTemplate() {
         return template;
     }
+    
 }

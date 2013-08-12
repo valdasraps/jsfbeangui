@@ -11,16 +11,15 @@ import java.io.InputStreamReader;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import jsf.bean.gui.log.Logger;
-import jsf.bean.gui.log.SimpleLogger;
+import lombok.extern.log4j.Log4j;
 
 /**
  *
  * @author valdor
  */
+@Log4j
 public class BeanTableDefaultPrimaryTemplate extends BeanTableDefaultExportTemplate implements BeanTableExportTemplatePrimary {
 
-    private static final Logger logger = SimpleLogger.getLogger(BeanTableDefaultPrimaryTemplate.class);
     private static final String SECTION_SEP = "${}SEPARATOR${}";
 
     public BeanTableDefaultPrimaryTemplate(String key, ResourceBundle bundle) throws IOException {
@@ -48,7 +47,7 @@ public class BeanTableDefaultPrimaryTemplate extends BeanTableDefaultExportTempl
             templates.put(TemplatePosition.values()[separatorNumber], sb.toString());
             return templates;
         } catch (IOException ex) {
-            logger.error(ex);
+            log.error(ex);
             return null;
         }
     }

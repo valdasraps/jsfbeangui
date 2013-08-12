@@ -4,7 +4,7 @@
 
     <groupId>jsf.bean.gui</groupId>
     <artifactId>jsfbeangui</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>jsfbeangui</name>
@@ -43,12 +43,12 @@
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>2.0.11</version> 
+            <version>2.1.13</version> 
         </dependency>
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-impl</artifactId>
-            <version>2.0.11</version>
+            <version>2.1.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
@@ -59,12 +59,12 @@
         <dependency>
             <groupId>org.icefaces</groupId>
             <artifactId>icefaces</artifactId>
-            <version>2.0.2</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.icefaces</groupId>
             <artifactId>icefaces-compat</artifactId>
-            <version>2.0.2</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>
